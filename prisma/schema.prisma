@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model article {
+  arti_id      Int     @id @default(autoincrement())
+  arti_title   String  @db.VarChar(100)
+  arti_context String  @db.VarChar(1000)
+  reply        reply[]
+}
+
+model reply {
+  rep_id      Int     @id @default(autoincrement())
+  rep_message String  @db.VarChar(1000)
+  rep_of_arti Int
+  article     article @relation(fields: [rep_of_arti], references: [arti_id], onDelete: Cascade, onUpdate: NoAction, map: "reply_ibfk_1")
+
+  @@index([rep_of_arti], map: "rep_of_arti")
+}
